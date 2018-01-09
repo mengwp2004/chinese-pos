@@ -62,14 +62,19 @@ public class HMMFactory {
             if(now.equals(""))
                 continue;
             if(allNumOfS.containsKey(now)&&allNumOfS.containsKey(previous)){
-                if(tranTotal.contains(previous, now))
+                if(tranTotal.contains(previous, now)) {
+                	//System.out.println(tranTotal.get(previous, now));
                     tranTotal.put(previous, now,tranTotal.get(previous, now)+1);
+                    //System.out.println("after:");
+                    //System.out.println(tranTotal.get(previous, now));
+                }
                 else{
                     tranTotal.put(previous, now, 1);
                 }
             }
             previous = now;
         }
+        //计算词性转移概率
         for(String rowKey:tranTotal.rowKeySet()){
             for(String columnKey:tranTotal.row(rowKey).keySet()){
                 transition.put(rowKey, columnKey, ((double) tranTotal.get(rowKey, columnKey))
@@ -136,9 +141,9 @@ public class HMMFactory {
         all.clear();
         for(int i=0;i<temp.length;i++){
             temp[i] = temp[i].toLowerCase().replaceAll("[^a-z]", "").trim();
-            if(temp[i].length()>2){
+            /*if(temp[i].length()>2){
                 temp[i] = temp[i].substring(0, 1);
-            }
+            }*/
             //统计每个词性的数目
             if(temp[i]!=""){
                 all.put(temp[i], all.getOrDefault(temp[i], 0)+1);
@@ -146,7 +151,7 @@ public class HMMFactory {
         }
         final Map<String,Integer> map =new HashMap<String,Integer>(all);
         //去除词性小于100的垃圾项
-        all.forEach((key,value)->{if (value<100) {
+        all.forEach((key,value)->{if (value<2) {
             map.remove(key);
         }});
         return map;

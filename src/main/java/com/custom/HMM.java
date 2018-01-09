@@ -69,7 +69,77 @@ public class HMM {
 			return Arrays.toString(viterbi(strs, 1, viterbiMap(emission.row(strs[0]), initial)));
 		}
 	}
+	 /**
+     * 求解HMM模型
+     * @param obs 观测序列
+     * @param states 隐状态
+     * @param start_p 初始概率（隐状态）
+     * @param trans_p 转移概率（隐状态）
+     * @param emit_p 发射概率 （隐状态表现为显状态的概率）
+     * @return 最可能的序列
+     */
+	/*
+    public static int[] viterbi1(String [] obs, Map<String, Integer> states, Map<String, Double> start_p, Table<String, String, Double>  trans_p, Table<String, String, Double>  emit_p)
+    {
+        double[][] V = new double[obs.length][states.size()];
+        int[][] path = new int[states.size()][obs.length];
 
+  
+        for (Map.Entry<String, Integer> entry : states.entrySet()){
+        	String y =entry.getKey();
+            V[0][y] = start_p.get(y) * emit_p.get[obs[0]];
+            path[y][0] = y;      	
+            initial.put(entry.getKey(), ((double) entry.getValue())/total);
+        }
+        
+        for (int y : states)
+        {
+            V[0][y] = start_p[y] * emit_p[y][obs[0]];
+            path[y][0] = y;
+        }
+
+        for (int t = 1; t < obs.length; ++t)
+        {
+            int[][] newpath = new int[states.length][obs.length];
+
+            for (int y : states)
+            {
+                double prob = -1;
+                int state;
+                for (int y0 : states)
+                {
+                    double nprob = V[t - 1][y0] * trans_p[y0][y] * emit_p[y][obs[t]];
+                    if (nprob > prob)
+                    {
+                        prob = nprob;
+                        state = y0;
+                        // 记录最大概率
+                        V[t][y] = prob;
+                        // 记录路径
+                        System.arraycopy(path[state], 0, newpath[y], 0, t);
+                        newpath[y][t] = y;
+                    }
+                }
+            }
+
+            path = newpath;
+        }
+
+        double prob = -1;
+        int state = 0;
+        for (int y : states)
+        {
+            if (V[obs.length - 1][y] > prob)
+            {
+                prob = V[obs.length - 1][y];
+                state = y;
+            }
+        }
+
+        return path[state];
+    }
+    */
+	
 	/**
 	 * 递归回溯法寻找最佳可能
 	 * 
@@ -82,6 +152,7 @@ public class HMM {
 		Map<String, Double> nowMap = new HashMap<String, Double>();
 		Map<String, String> preAndNow = new HashMap<String, String>();
 		// 寻找当前strs[i]所有可能情况的每一种最佳选择
+		
 		for (Entry<String, Double> now : emission.row(strs[i]).entrySet()) {
 			double min = Double.MAX_VALUE;
 			String best = null;
@@ -134,11 +205,16 @@ public class HMM {
 	 * @return
 	 */
 	private Map<String, Double> viterbiMap(Map<String, Double> map1, Map<String, Double> map2) {
+		System.out.println(map1);
+		System.out.println("-------");
+		System.out.print(map2);
 		Map<String, Double> map = new HashMap<String, Double>();
 		for (Entry<String, Double> entry : map1.entrySet()) {
 			double value = Math.log(entry.getValue()) + Math.log(map2.get(entry.getKey()));
 			map.put(entry.getKey(), -value);
 		}
+		System.out.println("input map:");
+		System.out.print(map);
 		return map;
 	}
 
